@@ -1,8 +1,6 @@
-from subprocess import call
 from loguru import logger
 import telebot
 from telebot import types
-import datetime
 import os
 from docx2pdf import convert
 
@@ -18,12 +16,12 @@ logger.info("Bot was started for polling")
 
 @logger.catch
 @bot.message_handler(commands=['start', 'help'])
-def send_welcome(message):
+def send_welcome(message: types.Message) -> None:
     introduction = 'Hey man I\'m the docx to pdf conveter bot. Upload the docx file and if God permits I will convert it to pdf'
     bot.send_message(message.from_user.id, introduction)
 
 @bot.message_handler(content_types=['document'])
-def handle_docs(message):
+def handle_docs(message: types.Message) -> None:
     try:
         if str(message.document.file_name)[str(message.document.file_name).find('.') + 1:] == "docx":
             save_file(message)
@@ -35,7 +33,7 @@ def handle_docs(message):
         bot.reply_to(message, e)
 
 
-def save_file(message):
+def save_file(message: types.Message) -> None:
     try:
         file_name = message.document.file_name
         file_id_info = bot.get_file(message.document.file_id)
@@ -50,12 +48,12 @@ def save_file(message):
         bot.send_message(message.chat.id, "[!] error - {}".format(str(ex)))
 
 
-def generate_pdf(file_name):
+def generate_pdf(file_name: str) -> str:
     pdf_file_name = file_name.replace(".docx", ".pdf")
     convert(file_name)
     return pdf_file_name
 
-def send_pdf_file(message, pdf_file_name):
+def send_pdf_file(message: types.Message, pdf_file_name: str) -> None:
     directory = BASE_DIR + "\\" + pdf_file_name
     f = open(pdf_file_name, "rb")
     bot.send_document(message.chat.id, f)
