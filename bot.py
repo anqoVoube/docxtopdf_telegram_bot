@@ -6,8 +6,10 @@ import datetime
 import os
 from docx2pdf import convert
 
+TOKEN = "TOKEN"
+
 BASE_DIR = os.getcwd()
-bot = telebot.TeleBot("5078550082:AAEah0sCsyxi5kQS31EF2qDL5ur5zvn39yw")
+bot = telebot.TeleBot(TOKEN)
 logger.add("debug.log", format="{time} {level} {message}",
            level="DEBUG", rotation="10 MB", compression="zip")
 
